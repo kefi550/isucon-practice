@@ -21,6 +21,7 @@ export class CdkStack extends cdk.Stack {
     });
     instanceSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22));
     instanceSg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
+    instanceSg.addIngressRule(ec2.Peer.ipv4(vpc.vpcCidrBlock), ec2.Port.allTraffic());
 
     const amiId = "ami-03b1b78bb1da5122f";
     const keyName = "kefikey";
