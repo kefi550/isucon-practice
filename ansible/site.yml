@@ -51,7 +51,10 @@
         remote_src: yes
         creates: /usr/local/bin/alp
 
+    - name: get netdata
+      shell: "curl https://my-netdata.io/kickstart.sh > /tmp/netdata-kickstart.sh"
+    - name: install netdata
+      command: "bash /tmp/netdata-kickstart.sh --dont-wait --non-interactive"
+
     # pt-query-digest
     # kataribe
-    # netdata
-    # hostsをいい感じしたい
