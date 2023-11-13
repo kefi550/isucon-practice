@@ -1,7 +1,5 @@
 - hosts: all
   become: true
-  vars:
-    remote_user: isucon
   tasks:
     - name: change hostname
       hostname:
@@ -55,6 +53,21 @@
       shell: "curl https://my-netdata.io/kickstart.sh > /tmp/netdata-kickstart.sh"
     - name: install netdata
       command: "bash /tmp/netdata-kickstart.sh --dont-wait --non-interactive"
+  roles:
+    - role: newrelic.newrelic_install
+  vars:
+    targets:
+      - infrastructure
+      - logs
+      - apm-nodejs
+      - nginx
+      - mysql
+    remote_user: isucon
+  environment:
+    NEW_RELIC_API_KEY: "{{ NEW_RELIC_API_KEY }}"
+    NEW_RELIC_ACCOUNT_ID: "{{ NEW_RELIC_ACCOUNT_ID }}"
+    NEW_RELIC_REGION: "{{ NEW_RELIC_REGION }}"
+    NEW_RELIC_MYSQL_ROOT_PASSWORD: "{{ NEW_RELIC_REGION }}"
 
     # pt-query-digest
     # kataribe
