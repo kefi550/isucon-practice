@@ -33,7 +33,7 @@
             #    state: restarted
 
     - name: install common packages
-      apt:
+      package:
         name: "{{ item }}"
         state: present
       with_items:
