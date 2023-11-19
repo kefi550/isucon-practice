@@ -38,7 +38,7 @@
         state: present
       with_items:
         - tcpdump
-        - zip
+          #- zip
         - unzip
         - vim
 
@@ -59,7 +59,7 @@
     targets:
       - infrastructure
       - logs
-      - apm-nodejs
+        #- apm-nodejs
       - nginx
       - mysql
     remote_user: isucon
@@ -67,7 +67,7 @@
     NEW_RELIC_API_KEY: "{{ NEW_RELIC_API_KEY }}"
     NEW_RELIC_ACCOUNT_ID: "{{ NEW_RELIC_ACCOUNT_ID }}"
     NEW_RELIC_REGION: "{{ NEW_RELIC_REGION }}"
-    NEW_RELIC_MYSQL_ROOT_PASSWORD: "{{ NEW_RELIC_REGION }}"
+    NEW_RELIC_MYSQL_ROOT_PASSWORD: "{{ NEW_RELIC_MYSQL_ROOT_PASSWORD }}"
 
     # pt-query-digest
     # kataribe
