@@ -27,21 +27,16 @@
           create: yes
           mode: 0700
 
-            #- name: restart sshd
-            #  systemd:
-            #    name: sshd
-            #    state: restarted
-
     - name: install common packages
       package:
         name: "{{ item }}"
         state: present
       with_items:
         - tcpdump
-          #- zip
         - unzip
         - vim
 
+    # alp
     - name: install alp
       unarchive:
         src: https://github.com/tkuchiki/alp/releases/download/v1.0.21/alp_linux_amd64.zip
@@ -49,25 +44,53 @@
         remote_src: yes
         creates: /usr/local/bin/alp
 
+    # pt-query-digest
+    - name: install percona-toolkit
+      unarchive:
+        src: https://downloads.percona.com/downloads/percona-toolkit/3.5.5/binary/tarball/percona-toolkit-3.5.5_x86_64.tar.gz
+        dest: /usr/local/
+        remote_src: yes
+    - name: install percona-toolkit
+      file:
+        src: /usr/local/percona-toolkit-3.5.5/bin/pt-query-digest
+        dest: /usr/local/bin/pt-query-digest
+        state: link
+
+    # netdata
+    - name: check if netdata is installed
+      command: which netdata
+      ignore_errors: true
+      register: netdata_executable
     - name: get netdata
       shell: "curl https://my-netdata.io/kickstart.sh > /tmp/netdata-kickstart.sh"
+      when: netdata_executable.rc != 0
     - name: install netdata
       command: "bash /tmp/netdata-kickstart.sh --dont-wait --non-interactive"
-        #roles:
-        #  - role: newrelic.newrelic_install
+      when: netdata_executable.rc != 0
+
+    # nodejs 16
+    - name: download nodejs 16
+      unarchive:
+        src: https://nodejs.org/download/release/v16.20.2/node-v16.20.2-linux-x64.tar.gz
+        dest: /usr/local/
+        remote_src: yes
+    - name: install nodejs 16
+      file:
+        src: /usr/local/node-v16.20.2-linux-x64
+        dest: /usr/local/node
+        state: link
+  roles:
+    - role: newrelic.newrelic_install
   vars:
     targets:
       - infrastructure
       - logs
         #- apm-nodejs
-      - nginx
-      - mysql
+        #- nginx
+        #- mysql
     remote_user: isucon
   environment:
     NEW_RELIC_API_KEY: "{{ NEW_RELIC_API_KEY }}"
     NEW_RELIC_ACCOUNT_ID: "{{ NEW_RELIC_ACCOUNT_ID }}"
     NEW_RELIC_REGION: "{{ NEW_RELIC_REGION }}"
     NEW_RELIC_MYSQL_ROOT_PASSWORD: "{{ NEW_RELIC_MYSQL_ROOT_PASSWORD }}"
-
-    # pt-query-digest
-    # kataribe
