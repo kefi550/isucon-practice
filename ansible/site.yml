@@ -62,32 +62,25 @@
       ignore_errors: true
       register: netdata_executable
     - name: get netdata
-      shell: "curl https://my-netdata.io/kickstart.sh > /tmp/netdata-kickstart.sh"
+      get_url:
+        url: https://my-netdata.io/kickstart.sh
+        dest: /tmp/netdata-kickstart.sh
+        mode: '0755'
+        force: true
       when: netdata_executable.rc != 0
     - name: install netdata
       command: "bash /tmp/netdata-kickstart.sh --dont-wait --non-interactive"
       when: netdata_executable.rc != 0
 
-    # nodejs 16
-    - name: download nodejs 16
-      unarchive:
-        src: https://nodejs.org/download/release/v16.20.2/node-v16.20.2-linux-x64.tar.gz
-        dest: /usr/local/
-        remote_src: yes
-    - name: install nodejs 16
-      file:
-        src: /usr/local/node-v16.20.2-linux-x64
-        dest: /usr/local/node
-        state: link
   roles:
     - role: newrelic.newrelic_install
   vars:
     targets:
       - infrastructure
       - logs
-        #- apm-nodejs
-        #- nginx
-        #- mysql
+      - apm-nodejs
+      - nginx
+      - mysql
     remote_user: isucon
   environment:
     NEW_RELIC_API_KEY: "{{ NEW_RELIC_API_KEY }}"

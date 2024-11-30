@@ -5,8 +5,9 @@
 your-server-hostname
 ```
 
+`secret-example` を参考に `secret`ファイルを準備する
 ```
-ansible-playbook site.yml
+cp secret-example secret
 ```
 
 初回のみローカルのsshconfigをいいかんじにしとく必要ある
@@ -20,4 +21,8 @@ Host isu2
 
 Host isu3
     HostName <isu3-publicip>
+```
+
+```
+ansible-playbook -e @secret site.yml
 ```
